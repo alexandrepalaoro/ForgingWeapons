@@ -10,12 +10,12 @@ full.table<-read.table("dados-morfo.csv",h=T,sep=',')
 names(full.table)
 full.table$species<-factor(full.table$species,levels=c("longirostri","denticulata","abtao"))
 full.table<-full.table[order(full.table$species),]
-#
+
 ## I am reordering the table to make more visible plots, otherwise denticulata's data
 ## would be hidden behind abtao's data.  
 
 ## 
-## This is for legend plotting only
+## This is for plotting the legend later on.
 ##
 full.table$sp.plot<-factor(full.table$species,levels=c("Aegla longirostri","Aegla denticulata","Aegla abtao"))
 
@@ -64,7 +64,7 @@ glmEST<-glm(lncs~cc.scale*species*sex-1,data=full.table,
 lncs.coef<-coefficients(glmEST)
 summary(glmEST) #getting their placements in the summary table
 
-#Since R used females of AEGLA LONGIROSTRI as their base, begin calculating by them
+# Since R used females of AEGLA LONGIROSTRI as their base, begin calculating by them
 ###
 #FEMALE AEGLA LONGIROSTRI
 ##
@@ -76,12 +76,12 @@ exp(lncs.coef[1]) #SLOPE
 ##
 #MALE AEGLA LONGIROSTRI
 ##
-#Male's intercept is the female's plus the value in the "sexmale" factor
+# Male's intercept is the female's plus the value in the "sexmale" factor
 
 exp(lncs.coef[2]+lncs.coef[5]) #INTERCEPT; P < 0.00001
 
-#Male's slope is the female's slope plus the value in the interaction 
-#cc:sexmale
+# Male's slope is the female's slope plus the value in the interaction 
+# cc:sexmale
 
 exp(lncs.coef[1]+lncs.coef[8]) #SLOPE; P < 0.0001
 
@@ -89,9 +89,9 @@ exp(lncs.coef[1]+lncs.coef[8]) #SLOPE; P < 0.0001
 #FEMALE AEGLA ABTAO
 ##
 
-##Since we removed the intercept, we get the real value here
+## Since we removed the intercept, we get the real value here
 
-exp(lncs.coef[4]) #INTERPCET; P
+exp(lncs.coef[4]) #INTERCEPT
 
 exp(lncs.coef[1]+lncs.coef[7]) #SLOPE
 
@@ -99,9 +99,15 @@ exp(lncs.coef[1]+lncs.coef[7]) #SLOPE
 #MALE AEGLA ABTAO
 ##
 
-exp(lncs.coef[4]+lncs.coef[10]) #INTERCEPT
+## Things get really tricky here. Simplifying, the intercept for the male is the
+## intercept for the female plus the male factor and the interaction species:factor
 
-exp(lncs.coef[1]+lncs.coef[12]) #SLOPE
+exp(lncs.coef[4]+lncs.coef[5]+lncs.coef[10]) #INTERCEPT
+
+## Meanwhile the slope follows the same logic: female slope plus every interaction
+## between size and male (i.e. lncs:species, lncs:sex, lncs:spp:sex)
+
+exp(lncs.coef[1]+lncs.coef[7]+lncs.coef[8]+lncs.coef[12]) #SLOPE
 
 ##
 #FEMALE AEGLA DENTICULATA
@@ -115,9 +121,9 @@ exp(lncs.coef[1]+lncs.coef[6]) #SLOPE
 #MALE AEGLA DENTICULATA
 ##
 
-exp(lncs.coef[3])+exp(lncs.coef[9]) #INTERCEPT
+exp(lncs.coef[3]+lncs.coef[5]+lncs.coef[9]) #INTERCEPT
 
-exp(lncs.coef[1]+lncs.coef[11]) #SLOPE
+exp(lncs.coef[1]+lncs.coef[6]+lncs.coef[8]+lncs.coef[11]) #SLOPE
 
 #####################################
 ## CONFIDENCE INTERVALS ESTIMATION ##
@@ -165,11 +171,11 @@ exp(lncs.coef[1]+confint(glmEST)[7,2]) #SLOPE 97.5%
 #MALE AEGLA ABTAO
 ##
 
-exp(lncs.coef[4]+confint(glmEST)[10,1]) #INTERCEPT 2.5%
-exp(lncs.coef[4]+confint(glmEST)[10,2]) #INTERCEPT 97.5%
+exp(lncs.coef[4]+lncs.coef[5]+confint(glmEST)[10,1]) #INTERCEPT 2.5%
+exp(lncs.coef[4]+lncs.coef[5]+confint(glmEST)[10,2]) #INTERCEPT 97.5%
 
-exp(lncs.coef[1]+confint(glmEST)[12,1]) #SLOPE 2.5%
-exp(lncs.coef[1]+confint(glmEST)[12,2]) #SLOPE 97.5%
+exp(lncs.coef[1]+lncs.coef[7]+lncs.coef[8]+confint(glmEST)[12,1]) #SLOPE 2.5%
+exp(lncs.coef[1]+lncs.coef[7]+lncs.coef[8]+confint(glmEST)[12,2]) #SLOPE 97.5%
 
 ##
 #FEMALE AEGLA DENTICULATA
@@ -185,11 +191,11 @@ exp(lncs.coef[1]+confint(glmEST)[6,2]) #SLOPE 97.5%
 #MALE AEGLA DENTICULATA
 ##
 
-exp(lncs.coef[3]+confint(glmEST)[9,1]) #INTERCEPT 2.5%
-exp(lncs.coef[3]+confint(glmEST)[9,2]) #INTERCEPT 97.5%
+exp(lncs.coef[3]+lncs.coef[5]+confint(glmEST)[9,1]) #INTERCEPT 2.5%
+exp(lncs.coef[3]+lncs.coef[5]+confint(glmEST)[9,2]) #INTERCEPT 97.5%
 
-exp(lncs.coef[1]+confint(glmEST)[11,1]) #SLOPE 2.5%
-exp(lncs.coef[1]+confint(glmEST)[11,2]) #SLOPE 97.5%
+exp(lncs.coef[1]+lncs.coef[6]+lncs.coef[8]+confint(glmEST)[11,1]) #SLOPE 2.5%
+exp(lncs.coef[1]+lncs.coef[6]+lncs.coef[8]+confint(glmEST)[11,2]) #SLOPE 97.5%
 
 #######################################
 ## PLOTTING DATA AND PREDICTED LINES ##
@@ -245,7 +251,7 @@ malesNew<-factor(rep("male",length(cc.longM)))
 femalesNew<-factor(rep("female",length(cc.longM)))
 
 ## Now we can start plotting. If you want to save the graph in tiff
-## format in our computer, please remove the # in the tiff() below
+## in your computer, just remove the # in the tiff() below
 ## and in dev.off() at the bottom
 
 #tiff(file="LnCSxCL.tiff",units="mm",width=170,height=150,res=600,
@@ -255,8 +261,8 @@ plot(lncs~cc.log,pch=c(24,21)[as.numeric(sex)],
      cex=1.5,data=full.table,bty='l',col=NA,las=1,ylab="Centroid size (log)",
      xlab="Cephalothorax length (log)")
 
-## Rather awkward, but I prefer to build the pannels in photoshop
-## So I plot everything here and move legends around in that
+## Rather awkward, but I prefer to build figure pannels in photoshop
+## So I plot everything here and move the legends around in PS
 
 legend("topleft", legend=c(expression(italic("Aegla abtao"),
                                       italic("Aegla denticulata"),
