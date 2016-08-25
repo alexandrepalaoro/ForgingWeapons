@@ -2,7 +2,6 @@ rm(list=ls())
 ##
 ###PACKAGES NEEDED
 ##
-require(bbmle)
 require(betareg)
 
 ##LOAD AND REARRANGE DATA
@@ -42,16 +41,23 @@ plot(beta1,which=1)
 #
 ###1. Model with no intercept to increase standard deviation precision 
 #-------------(Schielzeth, Methods Ecol. Evol., 2010)-----------------#
-#Note: Do not take into account P-values calculated here, they only 
-#say whether the parameters differ from zero. To get comparable P-values
-#look in summary(glm5)
+###2. Beta regression uses a logit link to bound the response variable
+###   between 0 and 1. This means that, to get estimates within the 
+###   boundaries of the response variable. The inverse of the logit
+###   is: exponential of the linear predictor divided by one plus the 
+###   exponential of the linear predictor. In S+: 
+###              exp(coefficient)/(1+exp(coefficient))
+
+#Note: Do not take into account P-values calculated in summary(betaEST) below,  
+#they only say whether the parameters differ from zero. To get comparable 
+#P-values look summary(glm5)
 
 betaEST<-betareg(maT~lncs.scale*species*sex-1 | species*sex,data=full.table)
 
 beta.coef<-coefficients(betaEST)
 summary(betaEST) #getting their placements in the summary table
 
-#Since R used females of AEGLA LONGIROSTRI as their base, begin calculating by them
+# Since R used females of AEGLA LONGIROSTRI as their base, begin calculating by them
 ###
 #FEMALE AEGLA LONGIROSTRI
 ##
@@ -63,12 +69,12 @@ exp(beta.coef[1])/(1+exp(beta.coef[1])) #SLOPE
 ##
 #MALE AEGLA LONGIROSTRI
 ##
-#Male's intercept is the female's plus the value in the "sexmale" factor
+# Male's intercept is the female's plus the value in the "sexmale" factor
 
 exp(beta.coef[2]+beta.coef[5])/(1+exp(beta.coef[2]+beta.coef[5])) #INTERCEPT; P < 0.00001
 
-#Male's slope is the female's slope plus the value in the interaction 
-#cc:sexmale
+# Male's slope is the female's slope plus the value in the interaction 
+# cc:sexmale
 
 exp(beta.coef[1]+beta.coef[8])/(1+exp(beta.coef[1]+beta.coef[8])) #SLOPE; P < 0.0001
 
@@ -76,7 +82,7 @@ exp(beta.coef[1]+beta.coef[8])/(1+exp(beta.coef[1]+beta.coef[8])) #SLOPE; P < 0.
 #FEMALE AEGLA ABTAO
 ##
 
-##Since we removed the intercept, we get the real value here
+## Since we removed the intercept, we get the real value here, no need to add
 
 exp(beta.coef[4])/(1+exp(beta.coef[4])) #INTERCEPT
 
@@ -117,7 +123,7 @@ exp(beta.coef[1]+beta.coef[6]+beta.coef[8]+beta.coef[11])/(1+exp(beta.coef[1]+be
 ## CONFIDENCE INTERVALS ESTIMATION ##
 #####################################
 
-#Looking at the positions in the table
+#Looking at their positions
 
 confint(betaEST)
 
