@@ -3,12 +3,15 @@ rm(list=ls())
 ###PACKAGES NEEDED
 ##
 require(betareg)
+require(lmtest)
 
 ##LOAD AND REARRANGE DATA
-full.table<-read.table("dados-morfo.csv",h=T,sep=',')
+
+full.table<-read.table("dados-morfo1.csv",h=T,sep=',')
 names(full.table)
 full.table$species<-factor(full.table$species,levels=c("longirostri","denticulata","abtao"))
 full.table<-full.table[order(full.table$species),]
+
 #
 ## I am reordering the table to make more visible plots, otherwise denticulata's data
 ## would be hidden behind abtao's data.  
@@ -16,11 +19,13 @@ full.table<-full.table[order(full.table$species),]
 ## 
 ## This is for legend plotting only
 ##
+
 full.table$sp.plot<-factor(full.table$species,levels=c("Aegla longirostri","Aegla denticulata","Aegla abtao"))
 
 ######################################################################################
 ## Scaling and centering the continuous variables that will be used in the analyses ##
 ######################################################################################
+
 full.table$lncs.scale<-as.vector(scale(full.table$lncs,center=T,scale=T))
 full.table$cc.scale<-as.vector(scale(log(full.table$cc),center=T,scale=T))
 full.table$proc.scale<-as.vector(scale(full.table$dist.proc,center=T,scale=T))
@@ -29,11 +34,22 @@ full.table$proc.scale<-as.vector(scale(full.table$dist.proc,center=T,scale=T))
 ## INVESTMENT IN CLAW EFFICIENCY ##
 ###################################
 
-
 beta1<-betareg(maT~lncs.scale*species*sex | species*sex,data=full.table)
 summary(beta1)
 plot(beta1,which=1)
 
+## Since anova() does not work with betareg() we will build three extra nested models
+## and compare them using a likelihood ratio test with 'lrtest' (in lmtest package)
+
+# Building models
+
+beta2<-betareg(maT~lncs.scale*species+species*sex+lncs.scale*sex | species*sex,data=full.table)
+beta3<-betareg(maT~lncs.scale*species+species*sex+sex | species*sex,data=full.table)
+beta4<-betareg(maT~lncs.scale*species+species+lncs.scale*sex | species*sex,data=full.table)
+
+# Comparing between them
+
+lrtest(beta1,beta2,beta3,beta4)
 
 ###########################
 ## PARAMETERS ESTIMATION ##
@@ -71,12 +87,12 @@ exp(beta.coef[1])/(1+exp(beta.coef[1])) #SLOPE
 ##
 # Male's intercept is the female's plus the value in the "sexmale" factor
 
-exp(beta.coef[2]+beta.coef[5])/(1+exp(beta.coef[2]+beta.coef[5])) #INTERCEPT; P < 0.00001
+exp(beta.coef[2]+beta.coef[5])/(1+exp(beta.coef[2]+beta.coef[5])) #INTERCEPT
 
 # Male's slope is the female's slope plus the value in the interaction 
 # cc:sexmale
 
-exp(beta.coef[1]+beta.coef[8])/(1+exp(beta.coef[1]+beta.coef[8])) #SLOPE; P < 0.0001
+exp(beta.coef[1]+beta.coef[8])/(1+exp(beta.coef[1]+beta.coef[8])) #SLOPE
 
 ##
 #FEMALE AEGLA ABTAO
@@ -209,22 +225,28 @@ betaPlot<-betareg(maT~lncs*species*sex | species*sex,data=full.table)
 ## This is needed to use the predict() function
 
 lncs.dentM<-seq(min(full.table$lncs[full.table$species=="denticulata"&full.table$sex=="male"]),
-                max(full.table$lncs[full.table$species=="denticulata"&full.table$sex=="male"]),length.out=100)
+                max(full.table$lncs[full.table$species=="denticulata"&full.table$sex=="male"]),
+                length.out=100)
 
 lncs.abtaoM<-seq(min(full.table$lncs[full.table$species=="abtao"&full.table$sex=="male"]),
-                 max(full.table$lncs[full.table$species=="abtao"&full.table$sex=="male"]),length.out=100)
+                 max(full.table$lncs[full.table$species=="abtao"&full.table$sex=="male"]),
+                 length.out=100)
 
 lncs.longM<-seq(min(full.table$lncs[full.table$species=="longirostri"&full.table$sex=="male"]),
-                max(full.table$lncs[full.table$species=="longirostri"&full.table$sex=="male"]),length.out=100)
+                max(full.table$lncs[full.table$species=="longirostri"&full.table$sex=="male"]),
+                length.out=100)
 
 lncs.dentF<-seq(min(full.table$lncs[full.table$species=="denticulata"&full.table$sex=="female"]),
-                max(full.table$lncs[full.table$species=="denticulata"&full.table$sex=="female"]),length.out=100)
+                max(full.table$lncs[full.table$species=="denticulata"&full.table$sex=="female"]),
+                length.out=100)
 
 lncs.abtaoF<-seq(min(full.table$lncs[full.table$species=="abtao"&full.table$sex=="female"]),
-                 max(full.table$lncs[full.table$species=="abtao"&full.table$sex=="female"]),length.out=100)
+                 max(full.table$lncs[full.table$species=="abtao"&full.table$sex=="female"]),
+                 length.out=100)
 
 lncs.longF<-seq(min(full.table$lncs[full.table$species=="longirostri"&full.table$sex=="female"]),
-                max(full.table$lncs[full.table$species=="longirostri"&full.table$sex=="female"]),length.out=100)
+                max(full.table$lncs[full.table$species=="longirostri"&full.table$sex=="female"]),
+                length.out=100)
 
 ## Now the factors
 
@@ -238,8 +260,8 @@ femalesNew<-factor(rep("female",length(lncs.longF)))
 ## format in our computer, please remove the # in the tiff() below
 ## and in dev.off() at the bottom
 
-tiff(file="MAxLnCS.tiff",units="mm",width=170,height=150,res=600,
-     compression="lzw")
+#tiff(file="MAxLnCS.tiff",units="mm",width=170,height=150,res=600,
+#     compression="lzw")
 plot(maT~lncs,pch=c(24,21)[as.numeric(sex)],
      bg=adjustcolor(c("red","gold","gray")[as.numeric(species)],0.7),
      cex=1.5,data=full.table,bty='l',col=NA,las=1,ylab="Mechanical advantage",
@@ -306,6 +328,6 @@ lines(longM$lncs,predict(betaPlot,type='response',newdata=longM),col="darkred",l
 longF<-data.frame(lncs=lncs.longF,species=sp.long,sex=femalesNew)
 lines(longF$lncs,predict(betaPlot,type='response',newdata=longF),col="darkred",lwd=3,lty=2)
 
-dev.off()
+#dev.off()
 
 #DONE :D
