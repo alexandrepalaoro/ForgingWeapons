@@ -257,8 +257,11 @@ plot(lncs~cc.log,pch=c(24,21)[as.numeric(sex)],
      cex=1.5,data=full.table,bty='l',col=NA,las=1,ylab="Centroid size (log)",
      xlab="Cephalothorax length (log)")
 
-## Rather awkward, but I prefer to build figure pannels in photoshop
-## So I plot everything here and move the legends around in PS
+## Rather awkward, but I never got around to learn how to plot the triangles and circles
+## side-by-side without adding another whole column. Therefore, I plot everything here,
+## open it in Photoshop and move legends around there.
+## If anyone knows how to work around my legends issue, please let me know. It would be of 
+## tremendous help!!
 
 legend("topleft", legend=c(expression(italic("Aegla abtao"),
                                       italic("Aegla denticulata"),
