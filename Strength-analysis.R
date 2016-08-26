@@ -36,6 +36,62 @@ full.table$proc.scale<-as.vector(scale(full.table$dist.proc,center=T,scale=T))
 ## INVESTMENT IN CLAW STRENGTH ##
 #################################
 
+## This is a hard response variable to analyze. 
+## First, let's look a the plot:
+
+plot(apodeme~lncs.scale,data=full.table,cex=1.5,las=1,ylab="Apodeme area (square root)",
+     xlab="Centroid size (log)")
+
+## It does not seem that species differ in their investment. Let's color this graph up
+
+plot(apodeme~lncs.scale,pch=c(24,21)[as.numeric(sex)],
+     bg=adjustcolor(c("red","gold","gray")[as.numeric(species)],0.7),
+     cex=1.5,data=full.table,bty='l',col=NA,las=1,ylab="Apodeme area (square root)",
+     xlab="Centroid size (log)")
+
+## By looking at it, I can only see differences in sheer claw size, not in strength
+## But maybe there are small differences in intercepts and slopes that we cannot see.
+## Since there are values really close to one, a Gamma distribution with a log link 
+## should work.
+
+glm1<-glm(apodeme~lncs.scale*species*sex,data=full.table,
+          family=Gamma(link="log"))
+
+summary(glm1)
+
+## Hmm, the coefficientes for denticulata seems way too big for that region of the graph
+## Let's check it out.
+
+exp(coefficients(glm1)[2]+coefficients(glm1)[6]) # Seems way too high. Let's compare.
+exp(coefficients(glm1)[2]+coefficients(glm1)[8]) # Higher than a fighting species, that's just wrong
+
+## Plotting the predicted line just to get an idea of what is going on
+
+pred1<-predict(glm1,type="response")[full.table$species=="denticulata"&full.table$sex=="female"]
+lines(full.table$lncs.scale[full.table$species=="denticulata"&full.table$sex=="female"],pred1,lwd=2)
+
+## If you take a careful look, you will notice that by the end of the line it start going up
+## (as an exponential should do). Apparently, this property of the exponential is making parameter
+## estimation unrealiable. To put that unrealiability to the test, I will do one thing here:
+
+plot(log(apodeme)~lncs,data=full.table)
+
+## Please note the first data points. They all belong to denticulata females and they show a large
+## increase. That's because a log() of a number near zero is a large value, and even very close numbers
+## will get large values. If you want further tests, check the confidence intervals 
+## (code further down for the real analysis, just add exp()) - you will notice that all intervals overlap
+## This means that there should be no difference among species or sexes and the model is unstable.
+## I have tried several other distributions and data transformation that I am not going to show here,
+## but you can try changing for a gaussian distribution, an identity link, a lm() and you will get the  
+## same results.
+
+## To get around this issue I square-rooted the apodeme value. Why? Beucase I measured the apodeme area, 
+## which is a quadratic measure. By square-rooting it, I transformed it from mm² to mm. Now I can use
+## a linear model and get a stable model with reasonable parameters. Let the coding begin. 
+
+# Note: I used a gls() because allometric data usually show auto-correlation and it seemed reasonable to
+# control for that. The residuals also seem pleased with my choice.
+
 gls1<-gls(sqrt(apodeme)~lncs.scale*species*sex,data=full.table,
           weights=varComb(varExp(form=~lncs.scale),varIdent(form=~1|species)))
 
@@ -198,7 +254,6 @@ lncs.coef[1]+lncs.coef[6]+lncs.coef[8]+confint(glsEST)[11,2] #SLOPE 97.5%
 #######################################
 ## PLOTTING DATA AND PREDICTED LINES ##
 #######################################
-
 
 ## For plotting we use the unscaled and uncentered variable to
 ## know how many units of centroid size grows when one unit of 
