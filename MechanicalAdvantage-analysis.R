@@ -212,7 +212,6 @@ exp(beta.coef[1]+beta.coef[6]+beta.coef[8]+confint(betaEST)[11,2])/(1+exp(beta.c
 ## PLOTTING DATA AND PREDICTED LINES ##
 #######################################
 
-
 ## For plotting we use the unscaled and uncentered variable to
 ## know how many units of centroid size grows when one unit of 
 ## LnCS grows
@@ -267,8 +266,11 @@ plot(maT~lncs,pch=c(24,21)[as.numeric(sex)],
      cex=1.5,data=full.table,bty='l',col=NA,las=1,ylab="Mechanical advantage",
      xlab="Centroid size (log)")
 
-## Rather awkward, but I prefer to build the pannels in photoshop
-## So I plot everything here and move legends around in that
+## Rather awkward, but I never got around to learn how to plot the triangles and circles
+## side-by-side without adding another whole column. Therefore, I plot everything here,
+## open it in Photoshop and move legends around there.
+## If anyone knows how to work around my legends issue, please let me know. It would be of 
+## tremendous help!!
 
 legend("bottomright", legend=c(expression(italic("Aegla abtao"),
                                           italic("Aegla denticulata"),
