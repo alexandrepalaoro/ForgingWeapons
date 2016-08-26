@@ -1,12 +1,7 @@
 rm(list=ls())
-##
-###PACKAGES NEEDED
-##
-require(bbmle)
-require(betareg)
 
 ##LOAD AND REARRANGE DATA
-full.table<-read.table("dados-morfo.csv",h=T,sep=',')
+full.table<-read.table("dados-morfo.csv1",h=T,sep=',')
 names(full.table)
 full.table$species<-factor(full.table$species,levels=c("longirostri","denticulata","abtao"))
 full.table<-full.table[order(full.table$species),]
@@ -17,11 +12,13 @@ full.table<-full.table[order(full.table$species),]
 ## 
 ## This is for plotting the legend later on.
 ##
+
 full.table$sp.plot<-factor(full.table$species,levels=c("Aegla longirostri","Aegla denticulata","Aegla abtao"))
 
 ######################################################################################
 ## Scaling and centering the continuous variables that will be used in the analyses ##
 ######################################################################################
+
 full.table$lncs.scale<-as.vector(scale(full.table$lncs,center=T,scale=T))
 full.table$cc.scale<-as.vector(scale(log(full.table$cc),center=T,scale=T))
 full.table$proc.scale<-as.vector(scale(full.table$dist.proc,center=T,scale=T))
@@ -30,7 +27,6 @@ full.table$proc.scale<-as.vector(scale(full.table$dist.proc,center=T,scale=T))
 #############################
 ## INVESTMENT IN CLAW SIZE ##
 #############################
-
 
 lm1<-lm(lncs~cc.scale*species*sex,data=full.table)
 plot(lm1,which=1)
