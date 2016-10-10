@@ -9,7 +9,7 @@ library(geomorph)
 
 ##LOAD AND REARRANGE DATA
 
-full.table<-read.table("dados-morfo1.csv",h=T,sep=',')
+full.table<-read.table("morpho-data.csv",h=T,sep=',')
 
 ## Making it easier for later on
 
@@ -18,7 +18,7 @@ sex<-full.table$sex
 
 ## Reading the TPS file with landmark information in it
 
-aeglas<-readland.tps("aeglas1.TPS",specID="ID")
+aeglas<-readland.tps("aeglas-shapes.TPS",specID="ID")
 
 ## Making a sliders file to show what are my semilandmarks
 
