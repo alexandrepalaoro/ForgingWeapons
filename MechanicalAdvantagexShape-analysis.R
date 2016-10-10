@@ -10,7 +10,7 @@ library(lmtest)
 
 ##LOAD AND REARRANGE DATA
 
-full.table<-read.table("dados-morfo1.csv",h=T,sep=',')
+full.table<-read.table("morpho-data.csv",h=T,sep=',')
 names(full.table)
 full.table$species<-factor(full.table$species,levels=c("longirostri","denticulata","abtao"))
 full.table<-full.table[order(full.table$species),]
