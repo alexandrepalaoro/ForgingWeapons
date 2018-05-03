@@ -10,6 +10,7 @@ library(nlme)
 library(phia)
 library(betareg)
 library(lmtest)
+library(scales)
 
 ##LOAD DATA
 
@@ -142,18 +143,21 @@ terms.gls <- function(object, ...) {
 # the main factor 'species'.
 
 testInteractions(gls2,pairwise='species',slope='lncs.scale')
+testInteractions(gls2,pairwise='species')
 
 # Now, the plot.
 
 plot(sqrt(apodeme)~lncs.scale,pch=21,
-     bg=c("darkgray","black","white")[as.numeric(species)],
+     bg=c(alpha("grey30",0.75),alpha("black",0.75),"white")[as.numeric(species)],
      cex=1.5,data=full.table,bty='l',las=1,ylab="Apodeme area (square root)",
      xlab="Centroid size (centered and scaled)")
-legend("topleft", legend=c("Dual-function weapon","Feeding claw","Fighting weapon"),
-       pch = c(21,21,21),
-       pt.bg=c("darkgray","black","white"),bty='n',
-       cex=1.2)
 
+legend("topleft", legend=c("Display+intense fighting",
+                           "No display+no intense fighting",
+                           "No display+intense fighting"),
+       pch = c(21,21,21),
+       pt.bg=c(alpha("grey30",0.75),alpha("black",0.75),"white"),bty='n',
+       cex=1.2)
 # To plot predicted lines, follow the script below.
 
 ######
@@ -225,20 +229,20 @@ summary(gls3)
 anova(gls3)
 
 testInteractions(gls3,pairwise = 'species',slope='lncs.scale')
+testInteractions(gls3,pairwise = 'species')
 
 ## Now we can make the plot.
 
 plot(ma2~lncs.scale,pch=21,
-     bg=c("darkgray","black","white")[as.numeric(species)],
+     bg=c(alpha("grey30",0.75),alpha("black",0.75),"white")[as.numeric(species)],
      cex=1.5,data=full.table,bty='l',las=1,ylab="Mechanical advantage",
      xlab="Centroid size (log)")
 
-## Rather awkward, but I prefer to build the pannels in photoshop
-## So I plot everything here and move legends around in that
-
-legend("topleft", legend=c("Dual-function weapon","Feeding claw","Fighting weapon"),
+legend("topleft", legend=c("Display+intense fighting",
+                           "No display+no intense fighting",
+                           "No display+intense fighting"),
        pch = c(21,21,21),
-       pt.bg=c("darkgray","black","white"),bty='n',
+       pt.bg=c(alpha("grey30",0.75),alpha("black",0.75),"white"),bty='n',
        cex=1.2)
 
 #Now the lines
@@ -267,20 +271,18 @@ lines(longM$lncs.scale,predict(gls3,type='response',newdata=longM),col="black",l
 
 tiff(file="Figure3-PANEL.tiff",units="mm",width=300,height=150,res=600,
      compression="lzw")
-par(mfrow=c(1,2))
 plot(sqrt(apodeme)~lncs.scale,pch=21,
-     bg=c("darkgray","black","white")[as.numeric(species)],
-     cex=1.5,data=full.table,bty='l',las=1,ylab="Apodeme area (square root)",
-     xlab="Centroid size (centered and scaled)")
+     bg=c(alpha("grey30",0.75),alpha("black",0.75),"white")[as.numeric(species)],
+     cex=1.5,data=full.table,las=1,ylab="Apodeme area (square root)",
+     xlab="Centroid size (centred and scaled)")
 
-## Rather awkward, but I prefer to build the pannels in photoshop
-## So I plot everything here and move legends around in that
-
-legend("topleft", legend=c("Dual-function weapon","Feeding claw","Fighting weapon"),
+legend("topleft", legend=c("Display+fierce fighting",
+                           "No display+no fierce fighting",
+                           "No display+fierce fighting"),
        pch = c(21,21,21),
-       pt.bg=c("darkgray","black","white"),bty='n',
+       pt.bg=c(alpha("grey30",0.75),alpha("black",0.75),"white"),bty='n',
        cex=1.2)
-legend(1.8,1.1,legend="(a)",cex=1.2,bty='n')
+legend(1.7,1.1,legend="(a)",cex=1.2,bty='n')
 
 ## Plotting the lines 
 
@@ -313,11 +315,11 @@ lines(longM$lncs.scale,predict(gls2,type='response',newdata=longM),col="black",l
 ####
 
 plot(ma2~lncs.scale,pch=21,
-     bg=c("darkgray","black","white")[as.numeric(species)],
-     cex=1.5,data=full.table,bty='l',las=1,ylab="Mechanical advantage",
-     xlab="Centroid size (centered and scaled)")
+     bg=c(alpha("grey30",0.75),alpha("black",0.75),"white")[as.numeric(species)],
+     cex=1.5,data=full.table,las=1,ylab="Mechanical advantage",
+     xlab="Centroid size (centred and scaled)")
 
-legend(1.8,0.56,legend="(b)",cex=1.2,bty='n')
+legend(1.7,0.56,legend="(b)",cex=1.2,bty='n')
 
 ##
 #AEGLA DENTICULATA - MALES
@@ -367,40 +369,55 @@ pca.aegla<-plotTangentSpace(agdt$coords,groups=agdt$species)
 
 pca.aegla$pc.summary
 
-## Now, plotting the data. Note that if you run the plotTangentSpace without
-## assigning it to an object, you get a plot right away.
-
-
-tiff(file="Figure4.tiff",units="mm",width=180,height=150,res=600,
-     compression="lzw")
-
-plot(pca.aegla$pc.scores[,1],pca.aegla$pc.scores[,2],xlab="PC1 (56.88%)",
-     ylab="PC2 (17.54%)",pch=21,
-     bg=c("darkgray","black","white")[as.numeric(species)],
-     cex=1.5,data=full.table,bty='l',las=1)
-
-
-legend("topright", 
-       legend=c("Dual-function weapon","Feeding claw","Fighting weapon"),
-       pch = c(21,21,21),
-       pt.bg=c("darkgray","black","white"),bty='n',
-       cex=1.2)
-
-legend("topleft",legend="(a)",cex=1.2,bty='n')
-
-
-dev.off()
-
-
 ####################################
 ## ANALYSIS OF SHAPE AND FUNCTION ##
 ####################################
 
+icf.scale<-as.vector(scale(log(agdt$icf)))
+
 ## First, let's use the procD.lm() function to get eh full ANOVA table with
 ## F-values for all our variables. 
 
-model<-procD.lm(coords~log(icf)*species,data=agdt,RRPP=T,iter=9999)
-summary(model)
+model1<-procD.lm(coords~icf.scale*species,data=agdt,RRPP=T,iter=9999)
+summary(model1)
+
+plot(model1,predictor=icf.scale,type=c("regression"),reg.type=c("PredLine"),
+     cex=1.3,pch=21,bg=c(alpha("grey30",0.75),alpha("black",0.75),
+                         "white")[as.numeric(agdt$species)],
+     xlab="Index of closing force (scaled and centered)",bty='l',las=1)
+
+tiff(file="Figure4.tiff",units="mm",width=180,height=280,res=600,
+     compression="lzw")
+
+par(mfrow=c(2,1),bty='l')
+
+plot(pca.aegla$pc.scores[,1],pca.aegla$pc.scores[,2],xlab="PC1 (56.88%)",
+     ylab="PC2 (17.54%)",pch=21,ylim=c(-0.07,0.07),xlim=c(-0.11,0.11),
+     bg=c(alpha("grey30",0.75),alpha("black",0.75),
+          "white")[as.numeric(species)],
+     cex=1.5,data=full.table,las=1)
+
+legend("topleft",legend="(a)",cex=1.2,bty='n')
+
+plot(model1,predictor=icf.scale,type=c("regression"),reg.type=c("RegScore"),
+     cex=1.5,pch=21,bg=c(alpha("grey30",0.75),alpha("black",0.75),
+                         "white")[as.numeric(agdt$species)],
+     xlab="Index of closing force (centred and scaled)",las=1)
+
+legend("topright",legend="(c)",cex=1.2,bty='n')
+
+legend("bottomleft", 
+       legend=c("Display+fierce fighting",
+                "No display+no fierce fighting",
+                "No display+fierce fighting"),
+       pch = c(21,21,21),
+       pt.bg=c(alpha("grey30",0.75),alpha("black",0.75),
+               "white"),bty='n',cex=1.2)
+
+
+dev.off()
+
+par(mfrow=c(1,1))
 
 
 ## Now, for pairwise comparisons it is a bit more complicated. This analysis tests one model (f1)
@@ -419,8 +436,8 @@ summary(model)
 ## (i.e. how much shape changes by each unit of claw efficiency). The second set provides the direction
 ## of shape change.
 
-model2<-advanced.procD.lm(f1=coords~log(icf)+species,
-                          f2=~log(icf)*species,
+model2<-advanced.procD.lm(f1=coords~icf.scale+species,
+                          f2=~icf.scale*species,
                           data=agdt,slope=~log(icf),groups=~species,
                           RRPP=T,iter=9999,angle.type = "deg")
 summary(model2)
@@ -442,7 +459,7 @@ summary(model2)
 ## Thus, I am accounting for the different allometric slopes and then performing the
 ## pairwise comparisons between the residuals of the species. 
 
-mdisp<-morphol.disparity(f1 = model,groups = ~species,data=agdt,iter=9999)
+mdisp<-morphol.disparity(f1 = model1,groups = ~species,data=agdt,iter=9999)
 mdisp
 
 ## This is it for the main analyses.
