@@ -1,9 +1,41 @@
 # ForgingWeapons
-R codes for my analyses on claw biomechanics and shape.
+Codes and dataset of the paper entitled "<strong>Fight intensity correlate to stronger and more mechanically efficient weapons in three species of *Aegla* crabs</strong>", submitted to *Behavioral Ecology and Sociobiology*. 
 
-Here, you will find the first analyses I made (which included sex). After several revisions, I removed the sex factor and performed different tests than you will find in most of these scripts.
+If you use anything from this repository, please cite this folder:
 
-The code that generated the paper that will hopefully be published someday can be found in the file "Biomech-GMM-Analyses.R"
+***
 
-Any questions, let me know.
-Hope you enjoy it :D
+Palaoro, AV (2019) Dataset and code for biomechanical and shape analyses of freshwater anomurans. GitHub repository. https://github.com/alexandrepalaoro/ForgingWeapons 
+
+
+-----------------------
+#### File summary:</br>
+
+<b>Biomech-GMM-Analyses</b>: *R code*. Code that organizes the data in the .xlsx file, loads the TPS files and run all analyses contained in the paper</br>
+
+<b>males-morpho-data.xlsx</b>: *dataset*. Dataset with all the data used in the analyses of the manuscript, except fofr the shape files.</br>
+
+<b>male-aeglids.tps</b>: *shape file*. File containing the 17 landmarks (6 landmarks and 11 semi-landmarks) digitized on the claws. The 
+order of the individuals in this file is the same that you will find in the dataset. For more information on the location of the landmarks and semi-landmarks. Please see Figure 1 in the paper.  
+
+
+###### Dataset metadata: </br>
+
+
+| Measures     | Unit        | Legend                                                                 |
+| ------------ | ----------- | ---------------------------------------------------------------------- |
+| ceph.length  | mm          | Cephalothorax length                                                   |
+| claw.length  | mm          | Propodus length                                                        |
+| claw.height  | mm          | Propodus height                                                        |
+| in.lever     | mm          | Distance from the fulcrum to the base of the dactyl                    |
+| out.lever1   | mm          | Distance from the fulcrum to the first tubercle on the dactyl          |
+| out.lever2   | mm          | Distance from the fulcrum to the tip of the dactyl                     |
+| ma1          | -           | Mechanical advantage = in.lever/out.lever1                             |
+| ma2          | -           | Mechanical advantage = in.lever/out.lever2                             |
+| maT          | -           | Maximum mechanical advantage                                           |
+| apodeme      | mm-squared  | Area of the cuticle in which the muscle attachs to close the claw      |
+| icf          | -           | Index of closing force = Apodeme times the mechanical advantage        |
+| ID           | -           | Number of the individual                                               |
+| name         | -           | Code on the tag of the individual in the photo. Used in the TPS file   |
+| sex          | -           | Only males                                                             |
+| species      | -           | Three levels. Either *Aegla abtao*, *Aegla longirostri*, or *Aegla denticulata* |
