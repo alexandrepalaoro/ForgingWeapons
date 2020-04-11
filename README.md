@@ -1,11 +1,11 @@
 # ForgingWeapons
-Codes and dataset of the paper entitled "<strong>Fight intensity correlate to stronger and more mechanically efficient weapons in three species of *Aegla* crabs</strong>", submitted to *Behavioral Ecology and Sociobiology*. 
+Codes and dataset of the paper entitled "<strong>Fight intensity correlates with stronger and more mechanically efficient weapons in three species of *Aegla* crabs</strong>", published in *Behavioral Ecology and Sociobiology*. 
 
-If you use anything from this repository, please cite this folder:
+If you use anything from this repository, please cite the paper:
 
 ***
 
-Palaoro, AV (2019) Dataset and code for biomechanical and shape analyses of freshwater anomurans. GitHub repository. https://github.com/alexandrepalaoro/ForgingWeapons 
+Palaoro, AV; Peixoto, PEC; Benso-Lopes, F; Boligon, DS & Santos, S (2020) Fight intensity correlates with stronger and more mechanically efficient weapons in three species of Aegla crabs. Behavioral Ecology and Sociobiology. DOI: 10.1007/s00265-020-02834-z
 
 
 -----------------------
